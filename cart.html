@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<main style="background-image: url('https://images.unsplash.com/photo-1584308878768-57d3387b1882?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjZ8fG1lZGljaW5lJTIwYmd8ZW58MHx8MHx8fDA%3D');background-size: cover;background-attachment: fixed;">
+    <div class="cart-container">
+        <h1>Your Cart</h1>
+        {% if cart_items %}
+            <form action="{{ url_for('order_form') }}" method="post">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                            <th>Select</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>${{ "%.2f"|format(item.price) }}</td>
+                            <td>
+                                <input type="number" min="1" value="{{ item.quantity }}" class="quantity-input" data-id="{{ item.id }}">
+                            </td>
+                            <td>${{ "%.2f"|format(item.total) }}</td>
+                            <td>
+                                <button type="button" class="remove-item" data-id="{{ item.id }}">Remove</button>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="selected_items" value="{{ item.id }}">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="cart-summary">
+                    <p>Total: $<span id="cart-total">{{ "%.2f"|format(total) }}</span></p>
+                    <button type="submit" class="btn btn-primary" id="checkout-btn">Proceed to Checkout</button>
+                </div>
+            </form>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Save cart to localStorage
+function saveCart(cart) {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Load cart from localStorage
+function loadCart() {
+    const cartJson = localStorage.getItem('cart');
+    return cartJson ? JSON.parse(cartJson) : {};
+}
+
+// Update cart in both localStorage and session
+function updateCart(productId, quantity) {
+    let cart = loadCart();
+    if (quantity > 0) {
+        cart[productId] = parseInt(quantity);
+    } else {
+        delete cart[productId];
+    }
+    saveCart(cart);
+
+    // Send updated cart to server
+    fetch('{{ url_for("update_cart") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cart)
+    }).then(() => {
+        location.reload();
+    });
+}
+
+// Load cart on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const cart = loadCart();
+    // Send loaded cart to server to sync
+    fetch('{{ url_for("update_cart") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cart)
+        
+    });
+});
+
+// Update quantity
+document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+        const productId = this.dataset.id;
+        const quantity = this.value;
+        updateCart(productId, quantity);
+    });
+});
+
+// Remove item
+document.querySelectorAll('.remove-item').forEach(button => {
+    button.addEventListener('click', function() {
+        const productId = this.dataset.id;
+        updateCart(productId, 0);
+    });
+});
+</script>
+{% endblock %}

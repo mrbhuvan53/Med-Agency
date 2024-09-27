@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      background-size: cover;
+      background-position: center;
+    }
+    .container {
+      max-width: 400px;
+      width: 90%;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    .register-link, .home-button {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #2c3e50;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .register-link:hover, .home-button:hover {
+      color: #3498db;
+    }
+    .home-button {
+      background-color: #2c3e50;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 30px;
+    }
+    .home-button:hover {
+      background-color: #34495e;
+      color: white;
+    }
+
+    </style>
+
+
+    
+    <form action="{{ url_for('user_login') }}" method="post">
+        
+    <h2>Login</h2>
+      <div class="form-group">
+        <label for="mid">MEDICAL ID</label>
+        <input type="number" name="mid" placeholder="Enter medical id" id="mid" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">PASSWORD</label>
+        <input type="password" name="password" placeholder="Enter Password" id="password" required>
+      </div>
+      
+      <button type="submit">Login</button>
+
+
+    <a href="{{ url_for('insert') }}" class="register-link">Don't have an account? Register</a>
+
+    <a href="{{ url_for('hello') }}" class="home-button">Go to Home Page</a>
+  </div>
+</form>
+</body>
+</html>

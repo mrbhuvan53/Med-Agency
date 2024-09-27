@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="home" class="landing-page">
+    <div class="floating-pills">
+        {% for i in range(20) %}
+            <div class="pill"></div>
+        {% endfor %}
+    </div>
+    <div class="welcome-text">
+        <h1>WELCOME TO<br>MED AGENCY</h1>
+        <p class="tagline">Your trusted partner in healthcare solutions <br>Your Health, Our Priority: Comprehensive Healthcare Solutions<br>Explore a wide range of high-quality medicines, drugs, and non-medicinal products tailored to meet all your healthcare needs.</p>
+    </div>
+</div>
+
+<section id="medicines" class="product-section" style="background-image: url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+    <h2 class="fade-in-up">MEDICINES</h2>
+    <div class="product-grid">
+        {% set medicines = [
+            {'name': 'Paracetamol', 'price': 5.99, 'mid': 'M001'},
+            {'name': 'Amoxicillin', 'price': 12.50, 'mid': 'M002'},
+            {'name': 'Ibuprofen', 'price': 7.25, 'mid': 'M003'},
+            {'name': 'Aspirin', 'price': 4.75, 'mid': 'M004'}
+        ] %}
+        {% for product in medicines %}
+            <div class="product-card">
+                <img src="https://source.unsplash.com/300x200/?medicine,{{ product.name }}" alt="{{ product.name }}">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-id">MID: {{ product.mid }}</p>
+                    <p class="product-price">${{ '%.2f'|format(product.price) }}</p>
+                    <button class="btn add-to-cart" onclick="addToCart('{{ product.name }}', '{{ product.mid or product.pid }}', '{{ product.price }}')">Add to Cart</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+  <a href="{{ url_for('medicines') }}" class="btn explore-btn">Explore All Medicines</a>
+  
+</section>
+
+<section id="non-medicinal" class="product-section" style="background-image: url('https://images.unsplash.com/photo-1601049315503-07926a49f521?q=80&w=1473&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+    <h2 class="fade-in-up">NON-MEDICINAL PRODUCTS</h2>
+    <div class="product-grid">
+        {% set products = [
+            {'name': 'Vitamins', 'price': 15.99, 'pid': 'P001'},
+            {'name': 'First Aid Kit', 'price': 24.50, 'pid': 'P002'},
+            {'name': 'Thermometer', 'price': 9.75, 'pid': 'P003'},
+            {'name': 'Face Mask', 'price': 3.50, 'pid': 'P004'}
+        ] %}
+        {% for product in products %}
+            <div class="product-card">
+                <img src="https://source.unsplash.com/300x200/?health,{{ product.name }}" alt="{{ product.name }}">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-id">PID: {{ product.pid }}</p>
+                    <p class="product-price">${{ '%.2f'|format(product.price) }}</p>
+                    <button class="btn add-to-cart" onclick="addToCart('{{ product.name }}', '{{ product.mid or product.pid }}', '{{ product.price }}')">Add to Cart</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('products') }}" class="btn explore-btn">Explore All Products</a>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addToCart(name, id, price) {
+    console.log(`Adding to cart: ${name} (${id}) - $${price}`);
+    // Here you would typically send an AJAX request to your server to add the item to the cart
+    alert(`${name} added to cart!`);
+}
+</script>
+{% endblock %}

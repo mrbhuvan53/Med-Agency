@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Med Agency</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .container {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .content {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transition: all 0.3s ease;
+        }
+        h1 {
+            color: #2c5282;
+            font-size: 2.5em;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #2b6cb0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+        .form {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .admin-btn {
+            margin-top: 10px;
+            background-color: #718096;
+        }
+        .admin-btn:hover {
+            background-color: #4a5568;
+        }
+        .switch-link {
+            margin-top: 1rem;
+            font-size: 0.9em;
+        }
+        .switch-link a {
+            color: #4299e1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .switch-link a:hover {
+            color: #2b6cb0;
+            text-decoration: underline;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .error {
+            color: red;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>WELCOME TO MED AGENCY</h1>
+            <p>Your trusted partner in medicine supply</p>
+            <button class="btn" onclick="showForm('login')">Login/Register</button>
+            <form id="loginForm" class="form">
+                <input type="text" id="loginUsername" placeholder="Username" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button class="btn" type="submit" onclick="login(event)">Login</button>
+                <button class="btn admin-btn" onclick="showAdminLogin()">Admin Login</button>
+                <p class="switch-link">Don't have an account? <a href="#" onclick="showForm('register')">Register here</a></p>
+            </form>
+            <form id="registerForm" class="form">
+                <input type="text" id="regUsername" placeholder="Username" required>
+                <input type="email" id="regEmail" placeholder="Email" required>
+                <input type="tel" id="regPhone" placeholder="Phone Number" required>
+                <input type="password" id="regPassword" placeholder="Password" required>
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+                <input type="text" id="regShopName" placeholder="Medical Shop Name" required>
+                <input type="text" id="regAddress" placeholder="Address" required>
+                <button class="btn" type="submit" onclick="register(event)">Register</button>
+                <p class="switch-link">Already have an account? <a href="#" onclick="showForm('login')">Login here</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showForm(formType) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const button = document.querySelector('.btn');
+
+            if (formType === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+            button.style.display = 'none';
+        }
+
+        function showAdminLogin() {
+    window.location.href = '../project/templates/login.html';
+}
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePhone(phone) {
+            const re = /^\d{10}$/;
+            return re.test(phone);
+        }
+
+        function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Send login request to server
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Login successful');
+                } else {
+                    alert('Login failed: ' + data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function register(event) {
+            event.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const shopName = document.getElementById('regShopName').value;
+            const address = document.getElementById('regAddress').value;
+
+            if (!username || !email || !phone || !password || !confirmPassword || !shopName || !address) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            if (!validatePhone(phone)) {
+                alert('Please enter a valid 10-digit phone number');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            // Send registration request to server
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, phone, password, shopName, address }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Registration successful. Please log in.');
+                    showForm('login');
+                } else {
+                    alert('Registration failed: ' + data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
